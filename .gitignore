@@ -1,0 +1,12 @@
+.venv-docx/
+bootstrap/terraform.tfvars
+
+.terraform/
+.terragrunt-cache/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.plan
+.DS_Store
+.idea/
+.vscode/

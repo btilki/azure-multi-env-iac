@@ -1,0 +1,42 @@
+stages:
+  - stage: Validate
+    displayName: Validate IaC
+    jobs:
+      - job: Validate
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+          - bash: |
+              curl -fsSL "https://releases.hashicorp.com/terraform/$(terraformVersion)/terraform_$(terraformVersion)_linux_amd64.zip" -o terraform.zip
+              unzip -o terraform.zip
+              sudo mv terraform /usr/local/bin/terraform
+              terraform version
+            displayName: Install Terraform
+          - bash: |
+              curl -sSL -o terragrunt "https://github.com/gruntwork-io/terragrunt/releases/download/v$(terragruntVersion)/terragrunt_linux_amd64"
+              chmod +x terragrunt
+              sudo mv terragrunt /usr/local/bin/terragrunt
+            displayName: Install Terragrunt
+          - bash: terraform fmt -check -recursive
+            displayName: Terraform fmt check
+          - bash: terragrunt hcl fmt --check
+            displayName: Terragrunt HCL format check
+          - bash: |
+              terraform -chdir=bootstrap init -backend=false
+              terraform -chdir=bootstrap validate
+            displayName: Validate bootstrap
+
+  - stage: Security
+    displayName: Security scan
+    dependsOn: Validate
+    jobs:
+      - job: Tfsec
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+          - bash: |
+              curl -sSL https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+              tfsec .
+            displayName: Run tfsec

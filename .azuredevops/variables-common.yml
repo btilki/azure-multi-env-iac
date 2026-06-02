@@ -1,0 +1,7 @@
+variables:
+  terraformVersion: "1.6.6"
+  terragruntVersion: "1.0.1"
+  TG_NON_INTERACTIVE: "true"
+  TG_DISABLE_BUCKET_UPDATE: "true"
+  TERRAGRUNT_NON_INTERACTIVE: "true"
+  TERRAGRUNT_DISABLE_BUCKET_UPDATE: "true"

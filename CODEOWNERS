@@ -1,0 +1,9 @@
+# Code owners — pair with branch protection on `main`.
+# Replace @YOUR_GITHUB_USER with your GitHub username or team.
+
+/live/ @btilki
+/bootstrap/ @btilki
+/modules/ @btilki
+/.azuredevops/ @btilki
+/azure-pipelines*.yml @btilki
+/docs/incident-response/ @btilki

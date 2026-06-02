@@ -1,0 +1,29 @@
+stages:
+  - stage: PlanAll
+    displayName: Plan all environments
+    dependsOn: Security
+    jobs:
+      - template: terragrunt-job.yml
+        parameters:
+          jobName: PlanDev
+          displayName: Plan dev
+          azureServiceConnection: sc-azure-iac-dev
+          deploymentEnvironment: dev
+          terragruntCommand: terragrunt run --all --source-update --non-interactive --disable-bucket-update -- plan -no-color
+          skipDepOutputs: true
+      - template: terragrunt-job.yml
+        parameters:
+          jobName: PlanStaging
+          displayName: Plan staging
+          azureServiceConnection: sc-azure-iac-staging
+          deploymentEnvironment: staging
+          terragruntCommand: terragrunt run --all --source-update --non-interactive --disable-bucket-update -- plan -no-color
+          skipDepOutputs: true
+      - template: terragrunt-job.yml
+        parameters:
+          jobName: PlanProd
+          displayName: Plan prod
+          azureServiceConnection: sc-azure-iac-prod
+          deploymentEnvironment: prod
+          terragruntCommand: terragrunt run --all --source-update --non-interactive --disable-bucket-update -- plan -no-color
+          skipDepOutputs: true

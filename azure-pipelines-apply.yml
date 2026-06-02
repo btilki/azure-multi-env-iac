@@ -1,0 +1,26 @@
+# Manual apply for one environment (no automatic trigger).
+##
+
+name: Iac-apply-$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger: none
+pr: none
+
+parameters:
+  - name: targetEnvironment
+    displayName: Target environment
+    type: string
+    default: dev
+    values:
+      - dev
+      - staging
+      - prod
+
+variables:
+  - template: .azuredevops/variables-common.yml
+
+stages:
+  - template: .azuredevops/stages-validate-security.yml
+  - template: .azuredevops/stages-apply.yml
+    parameters:
+      targetEnvironment: ${{ parameters.targetEnvironment }}

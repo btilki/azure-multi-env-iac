@@ -1,0 +1,21 @@
+# Weekly drift detection on main; queue manually anytime.
+
+name: Iac-drift-$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger: none
+pr: none
+
+schedules:
+  - cron: "0 3 * * 1"
+    displayName: Weekly Monday 03:00 UTC
+    branches:
+      include:
+        - main
+    always: true
+
+variables:
+  - template: .azuredevops/variables-common.yml
+
+stages:
+  - template: .azuredevops/stages-validate-security.yml
+  - template: .azuredevops/stages-drift.yml

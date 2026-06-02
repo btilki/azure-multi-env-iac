@@ -1,0 +1,20 @@
+# CI: validate, security scan, and plan all environments (PR + push to main).
+
+name: IaC-CI-$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+variables:
+  - template: .azuredevops/variables-common.yml
+
+stages:
+  - template: .azuredevops/stages-validate-security.yml
+  - template: .azuredevops/stages-plan-all.yml

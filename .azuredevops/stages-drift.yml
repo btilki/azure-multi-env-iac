@@ -1,0 +1,29 @@
+stages:
+  - stage: Drift
+    displayName: Drift detection
+    dependsOn: Security
+    jobs:
+      - template: terragrunt-job.yml
+        parameters:
+          jobName: DriftDev
+          displayName: Drift dev
+          azureServiceConnection: sc-azure-iac-dev
+          deploymentEnvironment: dev
+          terragruntCommand: terragrunt run --all --non-interactive --disable-bucket-update -- plan -detailed-exitcode -no-color
+          skipDepOutputs: true
+      - template: terragrunt-job.yml
+        parameters:
+          jobName: DriftStaging
+          displayName: Drift staging
+          azureServiceConnection: sc-azure-iac-staging
+          deploymentEnvironment: staging
+          terragruntCommand: terragrunt run --all --non-interactive --disable-bucket-update -- plan -detailed-exitcode -no-color
+          skipDepOutputs: true
+      - template: terragrunt-job.yml
+        parameters:
+          jobName: DriftProd
+          displayName: Drift prod
+          azureServiceConnection: sc-azure-iac-prod
+          deploymentEnvironment: prod
+          terragruntCommand: terragrunt run --all --non-interactive --disable-bucket-update -- plan -detailed-exitcode -no-color
+          skipDepOutputs: true

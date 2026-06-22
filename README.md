@@ -55,8 +55,11 @@ make tg-init-dev tg-plan-dev          # then tg-apply-dev when ready
 ```text
 ├── README.md, LICENSE, Makefile, SECURITY.md, CODEOWNERS, CHANGELOG.md
 ├── azure-pipelines*.yml, .azuredevops/
-├── bootstrap/                 # Remote state foundation
-├── live/                      # Terragrunt stacks (dev, staging, prod)
+├── bootstrap/                 # Remote state foundation (terraform + provider pins)
+├── live/
+│   ├── root.hcl               # Remote backend + generated versions.tf / provider.tf
+│   ├── dev|staging|prod/      # Terragrunt stacks per environment
+│   └── ...
 ├── modules/                   # networking, compute, databases
 └── docs/
     ├── architecture/
@@ -65,6 +68,8 @@ make tg-init-dev tg-plan-dev          # then tg-apply-dev when ready
     ├── diagrams/
     └── incident-response/
 ```
+
+There are **no** `.tf` files at the repository root. Terraform version and provider constraints are defined in `bootstrap/main.tf` and generated under each Terragrunt working directory from `live/root.hcl`.
 
 ---
 
@@ -80,7 +85,7 @@ make tg-init-dev tg-plan-dev          # then tg-apply-dev when ready
 
 ```bash
 make help              # all targets
-make validate          # terraform fmt check + bootstrap validate
+make validate          # bootstrap + Terragrunt validate (dev, no backend)
 make tg-fmt-check      # terragrunt hcl fmt --check
 pre-commit install     # optional — see .pre-commit-config.yaml
 ```

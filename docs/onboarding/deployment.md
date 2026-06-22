@@ -16,7 +16,7 @@ Phased operator guide for the **Azure Multi-Environment IaC Platform**.
 | [CODEOWNERS](../../CODEOWNERS) | `@YOUR_AZDO_USER` or GitHub username |
 
 ```bash
-rg 'multiplatsa|multi-iac|your-' --glob '!docs/diagrams/*'
+rg 'replacewithuniquestorageacct|multi-iac|your-' --glob '!docs/diagrams/*'
 ```
 
 ---

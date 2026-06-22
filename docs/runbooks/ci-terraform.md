@@ -32,6 +32,22 @@ terraform -chdir=bootstrap init -backend=false
 terraform -chdir=bootstrap validate
 ```
 
+### Terragrunt validate (dev stacks, no backend)
+
+```bash
+export TG_SKIP_DEP_OUTPUTS=true
+export TF_VAR_db_password='local-validate-only'
+export TF_VAR_admin_ssh_public_key='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3FakeKeyForLocalValidateOnly user@host'
+for unit in networking compute databases; do
+  cd "live/dev/${unit}"
+  terragrunt init -backend=false
+  terragrunt validate
+  cd - >/dev/null
+done
+```
+
+Or: `make tg-validate`
+
 ---
 
 ## Security stage (tfsec)

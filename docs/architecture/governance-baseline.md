@@ -11,7 +11,7 @@ This document matches how the repo is wired today: **Azure** resources, **Terraf
 
 ## Pipeline gates
 
-- **Format + bootstrap validate** — runs in **Validate** on `azure-pipelines.yml`, `azure-pipelines-apply.yml`, and `azure-pipelines-drift.yml` (`terraform fmt`, `terragrunt hcl fmt`, `bootstrap` validate).
+- **Format + bootstrap validate + Terragrunt validate** — runs in **Validate** on `azure-pipelines.yml`, `azure-pipelines-apply.yml`, and `azure-pipelines-drift.yml` (`terraform fmt`, `terragrunt hcl fmt`, bootstrap validate, per-unit `terragrunt validate` in `live/dev` with mock dependencies).
 - **Security scan** — **Security** stage on the same three pipelines (`tfsec`).
 - **Plan all environments** — `azure-pipelines.yml` only, after Security (`dev`, `staging`, `prod`).
 - **Apply one environment** — `azure-pipelines-apply.yml` only, manual run with parameter `targetEnvironment`.
@@ -24,7 +24,7 @@ This document matches how the repo is wired today: **Azure** resources, **Terraf
 
 - Terraform: `1.6.6` in `.azuredevops/variables-common.yml` (raise deliberately and test all pipelines).
 - Terragrunt: `1.0.1` in the same file (Terragrunt 1.x `run --` / `run --all` CLI).
-- AzureRM provider: `~> 4.0` in `versions.tf` (bootstrap pins the same family).
+- AzureRM provider: `~> 4.0` in `bootstrap/main.tf` and generated `versions.tf` from `live/root.hcl`.
 
 ## Required tags
 

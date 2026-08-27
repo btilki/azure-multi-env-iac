@@ -1,6 +1,8 @@
-# Production-Grade Multi-Environment IaC on Azure
+# Multi-Environment IaC on Azure
 
 Provision and operate **dev**, **staging**, and **prod** Azure infrastructure with **Terraform**, **Terragrunt**, and **Azure DevOps** (validate, tfsec, plan, gated apply, drift detection).
+
+> **Not production-ready.** This is a reference platform for layout, CI, and operations. The `prod` folder is a third isolated environment, not a hardened production baseline. Defaults still allow SSH from `0.0.0.0/0`, PostgreSQL public access, and public network access on state storage. Do not use as-is for real production workloads until the items in [SECURITY.md](SECURITY.md) and [docs/architecture/roadmap.md](docs/architecture/roadmap.md) are completed.
 
 ![Architecture overview](./docs/diagrams/azure-multi-environment-iac-platform.png)
 
@@ -85,7 +87,7 @@ There are **no** `.tf` files at the repository root. Terraform version and provi
 
 ```bash
 make help              # all targets
-make validate          # bootstrap + Terragrunt validate (dev, no backend)
+make validate          # fmt checks + bootstrap + Terragrunt validate (all envs, no backend)
 make tg-fmt-check      # terragrunt hcl fmt --check
 pre-commit install     # optional — see .pre-commit-config.yaml
 ```

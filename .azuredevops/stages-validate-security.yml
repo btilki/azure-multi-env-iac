@@ -31,14 +31,16 @@ stages:
               export TG_SKIP_DEP_OUTPUTS=true
               export TF_VAR_db_password='ci-validate-only'
               export TF_VAR_admin_ssh_public_key='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3FakeKeyForCiValidateOnly user@host'
-              for unit in networking compute databases; do
-                echo "Validating live/dev/${unit}..."
-                cd "live/dev/${unit}"
-                terragrunt init -backend=false
-                terragrunt validate
-                cd - >/dev/null
+              for env in dev staging prod; do
+                for unit in networking compute databases; do
+                  echo "Validating live/${env}/${unit}..."
+                  cd "live/${env}/${unit}"
+                  terragrunt init -backend=false
+                  terragrunt validate
+                  cd - >/dev/null
+                done
               done
-            displayName: Validate Terragrunt stacks (dev, per unit, no backend)
+            displayName: Validate Terragrunt stacks (all envs, per unit, no backend)
 
   - stage: Security
     displayName: Security scan

@@ -32,7 +32,7 @@ Symptom-based index. For pipeline-specific failures see [ci-terraform.md](ci-ter
 |---------|--------------|-----|
 | VMSS create fails | Invalid SSH key format | Ensure full single-line public key in `TF_VAR_admin_ssh_public_key` |
 | PostgreSQL create fails | Name not unique / quota | Change `name_prefix` or region; check subscription quotas |
-| NSG / SSH unreachable | `allowed_ssh_cidr` too restrictive or too open | Set module input per env; use Bastion for prod-shaped setups |
+| NSG / SSH unreachable | `allowed_ssh_cidr` too restrictive or too open | Set `allowed_ssh_cidr` in `live/<env>/env.hcl`; use Bastion for prod-shaped setups |
 
 ---
 

@@ -1,6 +1,6 @@
 # Weekly drift detection on main; queue manually anytime.
 
-name: Iac-drift-$(Date:yyyyMMdd)$(Rev:.r)
+name: IaC-drift-$(Date:yyyyMMdd)$(Rev:.r)
 
 trigger: none
 pr: none

@@ -2,6 +2,8 @@
 
 Multi-environment **Azure** infrastructure: Terraform modules, **Terragrunt** orchestration, **Azure DevOps** CI/CD, remote state in **Azure Blob Storage**.
 
+**Status:** Reference platform — **not production-ready**. The `prod` environment is a third isolated stack, not a hardened production baseline. See [SECURITY.md](../../SECURITY.md) and [roadmap.md](roadmap.md).
+
 **Full design:** [design.md](design.md) · **Plan:** [project-plan.md](project-plan.md)
 
 ![Platform overview](../diagrams/azure-multi-environment-iac-platform.png)
@@ -23,8 +25,8 @@ Multi-environment **Azure** infrastructure: Terraform modules, **Terragrunt** or
 | Layer | Resources |
 |-------|-----------|
 | State (shared) | Resource group, storage account, private blob container (`bootstrap/`) |
-| Network | VNet, public/private subnets, NSG rules |
-| Compute | Linux VM Scale Set (SSH key auth) |
+| Network | VNet, public/private subnets |
+| Compute | Linux VM Scale Set (SSH key auth), NSG (SSH ingress, HTTPS egress) |
 | Data | PostgreSQL Flexible Server + database + firewall rules |
 
 Terragrunt units under `live/<env>/`: `networking` → `compute` / `databases`.

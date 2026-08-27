@@ -29,8 +29,8 @@ inputs = {
   db_name             = "appdb"
   db_username         = local.env.locals.db_username
   db_password         = get_env("TF_VAR_db_password")
-  db_sku_name         = "B_Standard_B2s"
-  storage_mb          = 65536
+  db_sku_name         = local.env.locals.db_sku_name
+  storage_mb          = local.env.locals.storage_mb
   zone                = local.env.locals.db_zone
   tags                = local.env.locals.tags
 }

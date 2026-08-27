@@ -2,6 +2,8 @@
 
 Index for the **Azure Multi-Environment IaC Platform**.
 
+**Not production-ready** — see [SECURITY.md](../SECURITY.md) and [architecture/roadmap.md](architecture/roadmap.md).
+
 | Area | Path | Description |
 |------|------|-------------|
 | Architecture | [architecture/](architecture/) | Overview, design, state, governance, promotion, roadmap |

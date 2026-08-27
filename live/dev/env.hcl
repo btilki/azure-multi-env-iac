@@ -17,6 +17,9 @@ locals {
   vm_size              = "Standard_B2s"
   vm_instance_count    = 1
   admin_username       = "azureadmin"
+  allowed_ssh_cidr     = "0.0.0.0/0"
   db_username          = "appadmin"
+  db_sku_name          = "B_Standard_B1ms"
+  storage_mb           = 32768
   db_zone              = null
 }

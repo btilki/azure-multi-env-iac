@@ -14,6 +14,10 @@ output "state_container_name" {
 }
 
 output "state_prefixes" {
-  description = "Standardized state prefixes by environment."
-  value       = [for env in var.environment_names : "${env}/terraform.tfstate"]
+  description = "State blob keys per environment and Terragrunt unit (matches live/root.hcl)."
+  value = flatten([
+    for env in var.environment_names : [
+      for stack in var.stack_names : "${env}/${stack}/terraform.tfstate"
+    ]
+  ])
 }

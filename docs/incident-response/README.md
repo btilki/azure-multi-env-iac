@@ -2,6 +2,8 @@
 
 Incident response procedures for the **Azure Multi-Environment IaC Platform**. Adapt severity thresholds and escalation paths to your organization's on-call model.
 
+These procedures assume a lab or non-production deployment. The platform is **not production-ready** as shipped ([SECURITY.md](../../SECURITY.md)).
+
 ---
 
 ## Severity levels

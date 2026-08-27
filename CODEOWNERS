@@ -1,5 +1,5 @@
 # Code owners — pair with branch protection on `main`.
-# Replace @YOUR_GITHUB_USER with your GitHub username or team.
+# GitHub username or team (not Azure DevOps identity).
 
 /live/ @btilki
 /bootstrap/ @btilki

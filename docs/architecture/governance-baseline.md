@@ -2,6 +2,8 @@
 
 This document matches how the repo is wired today: **Azure** resources, **Terraform + Terragrunt**, and **Azure DevOps** pipelines under `azure-pipelines*.yml`.
 
+**Not production-ready.** Pipeline gates and environment isolation are in place; runtime networking defaults are still lab-oriented. See [SECURITY.md](../../SECURITY.md) and [roadmap.md](roadmap.md) before treating `prod` as a production environment.
+
 ## Identity and access
 
 - Use **separate Azure Resource Manager service connections** per environment (`sc-azure-iac-dev`, `sc-azure-iac-staging`, `sc-azure-iac-prod`). Pipeline templates reference these names directly.
@@ -11,7 +13,7 @@ This document matches how the repo is wired today: **Azure** resources, **Terraf
 
 ## Pipeline gates
 
-- **Format + bootstrap validate + Terragrunt validate** — runs in **Validate** on `azure-pipelines.yml`, `azure-pipelines-apply.yml`, and `azure-pipelines-drift.yml` (`terraform fmt`, `terragrunt hcl fmt`, bootstrap validate, per-unit `terragrunt validate` in `live/dev` with mock dependencies).
+- **Format + bootstrap validate + Terragrunt validate** — runs in **Validate** on `azure-pipelines.yml`, `azure-pipelines-apply.yml`, and `azure-pipelines-drift.yml` (`terraform fmt`, `terragrunt hcl fmt`, bootstrap validate, per-unit `terragrunt validate` in `live/dev`, `live/staging`, and `live/prod` with mock dependencies).
 - **Security scan** — **Security** stage on the same three pipelines (`tfsec`).
 - **Plan all environments** — `azure-pipelines.yml` only, after Security (`dev`, `staging`, `prod`).
 - **Apply one environment** — `azure-pipelines-apply.yml` only, manual run with parameter `targetEnvironment`.

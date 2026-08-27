@@ -11,9 +11,15 @@ variable "azure_location" {
 }
 
 variable "environment_names" {
-  description = "Environment names used for state prefixes."
+  description = "Environment names used in Terragrunt live paths and state blob keys."
   type        = list(string)
   default     = ["dev", "staging", "prod"]
+}
+
+variable "stack_names" {
+  description = "Terragrunt unit names under live/<env>/ (must match state key segments in live/root.hcl)."
+  type        = list(string)
+  default     = ["networking", "compute", "databases"]
 }
 
 variable "state_resource_group_name" {

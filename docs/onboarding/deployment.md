@@ -3,6 +3,8 @@
 Phased operator guide for the **Azure Multi-Environment IaC Platform**.  
 **Detailed commands:** [runbook.md](runbook.md) · **Architecture:** [../architecture/overview.md](../architecture/overview.md) · **Security:** [../../SECURITY.md](../../SECURITY.md)
 
+> **Not production-ready.** Use this guide for labs and non-production environments. Do not apply the `prod` stack to real production data until SSH is restricted, PostgreSQL is private, and state storage is locked down ([SECURITY.md](../../SECURITY.md), [roadmap.md](../architecture/roadmap.md)).
+
 ---
 
 ## Initial setup (configure identifiers)
@@ -13,7 +15,7 @@ Phased operator guide for the **Azure Multi-Environment IaC Platform**.
 | `live/root.hcl` | Same state RG, storage account, container as bootstrap |
 | Azure DevOps service connections | Subscription scope per env; names `sc-azure-iac-*` |
 | Azure DevOps secret variables | `TF_VAR_DB_PASSWORD`, `TF_VAR_ADMIN_SSH_PUBLIC_KEY` |
-| [CODEOWNERS](../../CODEOWNERS) | `@YOUR_AZDO_USER` or GitHub username |
+| [CODEOWNERS](../../CODEOWNERS) | GitHub username or team (`@btilki`) |
 
 ```bash
 rg 'replacewithuniquestorageacct|multi-iac|your-' --glob '!docs/diagrams/*'
@@ -29,7 +31,7 @@ rg 'replacewithuniquestorageacct|multi-iac|your-' --glob '!docs/diagrams/*'
 | 1 | Azure DevOps (envs, connections, pipelines) | [runbook.md §2](runbook.md#2-azure-devops-foundations) |
 | 2 | Bootstrap remote state | [runbook.md §3](runbook.md#3-bootstrap-remote-state) |
 | 3 | Align `live/root.hcl` | [runbook.md §4](runbook.md#4-align-terragrunt-root-config) |
-| 4 | Local or pipeline apply (dev) | [runbook.md §5–6](runbook.md#5-export-runtime-secrets) |
+| 4 | Local or pipeline apply (dev) | [runbook.md §5–6](runbook.md#6-deploy-by-environment) |
 | 5 | Promote staging → prod | [../architecture/environment-promotion.md](../architecture/environment-promotion.md) |
 | 6 | Verification | [runbook.md §7](runbook.md#7-verify-azure-resources) |
 
@@ -74,5 +76,8 @@ Mapped at runtime to `TF_VAR_db_password` and `TF_VAR_admin_ssh_public_key` in `
 See [runbook.md — Teardown](runbook.md#8-teardown).
 
 ```bash
-make tg-destroy-dev   # repeat for staging/prod, then bootstrap-destroy
+make tg-destroy-dev
+make tg-destroy-staging
+make tg-destroy-prod
+make bootstrap-destroy
 ```

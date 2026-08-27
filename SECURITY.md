@@ -3,6 +3,8 @@
 Security model for the **Azure Multi-Environment IaC Platform**.  
 **Deploy:** [docs/onboarding/deployment.md](docs/onboarding/deployment.md) · **Architecture:** [docs/architecture/overview.md](docs/architecture/overview.md) · **Design:** [docs/architecture/design.md](docs/architecture/design.md)
 
+> **Not production-ready.** The as-built baseline is suitable for learning, demos, and non-production labs. It is **not** a production security baseline. Treat `live/prod` as an isolated environment name only. Close the gaps in [Runtime hardening](#runtime-hardening-current-baseline) and [docs/architecture/roadmap.md](docs/architecture/roadmap.md) before any real production use.
+
 ---
 
 ## Principles
@@ -43,7 +45,7 @@ Never commit values in `*.tfvars` (except non-secret examples), `*.hcl`, or docu
 
 | Area | As-built | Production target |
 |------|----------|-------------------|
-| VM SSH | NSG rule; module default CIDR is broad | Restrict `allowed_ssh_cidr`; Azure Bastion |
+| VM SSH | NSG rule; `allowed_ssh_cidr` in `live/*/env.hcl` (default open) | Restrict `allowed_ssh_cidr`; Azure Bastion |
 | PostgreSQL | Public access enabled in module | Private endpoint; disable public access |
 | State account | Public network access configurable | Private endpoint + network rules |
 
@@ -56,7 +58,7 @@ See [docs/architecture/roadmap.md](docs/architecture/roadmap.md).
 | Control | Tool / location |
 |---------|-----------------|
 | IaC scan | Azure DevOps: tfsec (Security stage) |
-| Format / validate | `terraform fmt`, bootstrap validate, Terragrunt validate (`live/dev`) |
+| Format / validate | `terraform fmt`, bootstrap validate, Terragrunt validate (`live/dev`, `live/staging`, `live/prod`) |
 | Provider pin | `~> 4.0` azurerm in `bootstrap/main.tf` and `live/root.hcl` (generated `versions.tf`) |
 | Tool pin | Terraform/Terragrunt versions in `.azuredevops/variables-common.yml` |
 

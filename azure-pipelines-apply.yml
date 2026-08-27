@@ -1,7 +1,7 @@
 # Manual apply for one environment (no automatic trigger).
 ##
 
-name: Iac-apply-$(Date:yyyyMMdd)$(Rev:.r)
+name: IaC-apply-$(Date:yyyyMMdd)$(Rev:.r)
 
 trigger: none
 pr: none

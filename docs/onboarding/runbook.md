@@ -132,7 +132,7 @@ terragrunt run --all -- apply
 
 Promotion order: `dev` → `staging` → `prod`.
 
-Makefile shortcuts: `make tg-init-dev`, `make tg-plan-dev`, `make tg-apply-dev`.
+Makefile shortcuts: `make tg-init-dev`, `make tg-plan-dev`, `make tg-apply-dev` (and the matching `staging` / `prod` targets).
 
 ---
 
@@ -180,8 +180,13 @@ cd ../../bootstrap && terraform destroy
 
 ## Control checklist (before first prod apply)
 
+The `prod` stack is **not production-ready** as shipped. Completing this checklist deploys the isolated `prod` environment; it does **not** mean the workload is hardened for real production use. Also complete [SECURITY.md](../../SECURITY.md) runtime hardening and [roadmap.md](../architecture/roadmap.md).
+
 - [ ] Bootstrap complete; `live/root.hcl` matches
 - [ ] Service connections and secrets configured
 - [ ] IaC CI green on `main`
 - [ ] IaC Apply succeeded in `dev` and `staging`
 - [ ] Approvals configured for `prod`
+- [ ] `allowed_ssh_cidr` restricted (not `0.0.0.0/0`)
+- [ ] PostgreSQL public access disabled / private endpoint (if required by policy)
+- [ ] State storage public network access restricted

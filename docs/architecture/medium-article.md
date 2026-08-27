@@ -8,7 +8,7 @@
 
 Teams outgrow a single Terraform root module when they need **isolated environments**, **shared modules**, **remote state**, and **gated delivery**. This platform implements that pattern on Azure: three environments in one repository, Terragrunt orchestration, Azure Blob remote state, and Azure DevOps pipelines for validate, scan, plan, apply, and drift detection.
 
-The repository delivers **platform infrastructure** on Azure — networking, compute, and PostgreSQL. The AWS equivalent is [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac).
+The repository delivers **platform infrastructure** on Azure — networking, compute, and PostgreSQL. It is a **reference platform, not production-ready**: SSH, PostgreSQL, and state storage still use lab-oriented network defaults. The AWS equivalent is [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac).
 
 ---
 
@@ -36,7 +36,7 @@ Design details: `docs/architecture/design.md` · Operator runbook: `docs/onboard
 |------|------|
 | `bootstrap/` | One-time remote state storage (resource group, storage account, container) |
 | `live/root.hcl` | Shared `azurerm` backend and generated provider |
-| `live/<env>/env.hcl` | Per-environment CIDRs, SKUs, tags |
+| `live/<env>/env.hcl` | Per-environment CIDRs, VM/DB SKUs, SSH CIDR, tags |
 | `live/<env>/<stack>/terragrunt.hcl` | Module source and dependencies |
 
 Example (`live/dev/networking/terragrunt.hcl`):
@@ -154,6 +154,6 @@ Planned improvements are tracked in `docs/architecture/roadmap.md`, including:
 
 ## Closing
 
-This repository implements multi-environment Azure platform infrastructure with documented operations, security controls, and CI/CD gates. Source: [github.com/btilki/azure-multi-env-iac](https://github.com/btilki/azure-multi-env-iac).
+This repository implements multi-environment Azure platform infrastructure with documented operations, security controls, and CI/CD gates. It is **not production-ready** as shipped. Source: [github.com/btilki/azure-multi-env-iac](https://github.com/btilki/azure-multi-env-iac).
 
 *Figure 1: `docs/diagrams/azure-multi-environment-iac-platform.png`*

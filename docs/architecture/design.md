@@ -1,6 +1,6 @@
 # Architecture & design — Azure multi-environment IaC
 
-**Status:** As-built (matches repository layout)  
+**Status:** As-built reference platform — **not production-ready** (matches repository layout; security hardening is on the [roadmap](roadmap.md))  
 **Companion:** [project-plan.md](./project-plan.md) · [overview.md](./overview.md) · [README.md](../../README.md)  
 **Sibling repository (AWS):** [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac)
 
@@ -10,6 +10,8 @@
 
 This repository provisions **shared platform infrastructure** on Azure across **dev**, **staging**, and **prod**. A one-time **bootstrap** stack creates remote state storage. **Terragrunt** wraps Terraform modules and injects backend configuration from `live/root.hcl`. **Azure DevOps** runs formatting checks, bootstrap validation, **tfsec**, environment-scoped plans, manual applies, and weekly drift detection.
 
+The as-built defaults are **not production-ready** (open SSH CIDR, public PostgreSQL, public state-account network access). `prod` is a third isolated environment, not a claim of production hardening.
+
 ---
 
 ## 2. Goals and non-goals
@@ -17,7 +19,7 @@ This repository provisions **shared platform infrastructure** on Azure across **
 ### 2.1 Goals
 
 - **Repeatable modules** for network, compute, and PostgreSQL.
-- **Environment isolation** via separate Terragrunt folders and distinct `env.hcl` inputs (CIDR, VM SKU, instance count, tags).
+- **Environment isolation** via separate Terragrunt folders and distinct `env.hcl` inputs (CIDR, VM SKU, instance count, DB SKU/storage, SSH CIDR, tags).
 - **Pipeline gates** before merge and before apply.
 - **Operational hygiene**: drift pipeline, documented promotion and rollback paths.
 
@@ -26,6 +28,7 @@ This repository provisions **shared platform infrastructure** on Azure across **
 - Application deployment and Kubernetes workloads — out of scope for this infrastructure repository.
 - Multi-subscription landing zone or Azure Policy pack in this repo.
 - Private Link / zero-trust networking for all services (documented as roadmap hardening).
+- Production-ready network and data-plane hardening of the as-built defaults (open SSH, public PostgreSQL, public state-account access).
 
 ---
 
@@ -94,8 +97,11 @@ Details: [state-strategy.md](state-strategy.md)
 | VNet CIDR | 10.10.0.0/16 | 10.20.0.0/16 | 10.30.0.0/16 |
 | VMSS instances | 1 | 2 | 3 |
 | VM SKU | Standard_B2s | Standard_B2s | Standard_B4ms |
+| PostgreSQL SKU | B_Standard_B1ms | B_Standard_B2s | GP_Standard_D2ds_v4 |
+| PostgreSQL storage | 32768 MB | 65536 MB | 131072 MB |
+| SSH source CIDR | 0.0.0.0/0 | 0.0.0.0/0 | 0.0.0.0/0 |
 
-Source: `live/*/env.hcl`.
+Source: `live/*/env.hcl`. Restrict `allowed_ssh_cidr` per environment before production use.
 
 ---
 

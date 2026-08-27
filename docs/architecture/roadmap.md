@@ -2,13 +2,15 @@
 
 Planned improvements beyond the current as-built baseline. Items are prioritized in the platform engineering backlog; timelines depend on change windows and dependency work.
 
+**This platform is not production-ready** until the security hardening items below are complete. The `prod` stack name does not mean the workload is safe for production traffic or data.
+
 ---
 
 ## Security hardening
 
 | Item | Current | Target |
 |------|---------|--------|
-| SSH access | NSG allows configurable CIDR (default open in module) | Per-env bastion / Azure Bastion; restrict `allowed_ssh_cidr` |
+| SSH access | NSG allows configurable CIDR via `allowed_ssh_cidr` in `live/*/env.hcl` (default open) | Per-env bastion / Azure Bastion; restrict `allowed_ssh_cidr` |
 | PostgreSQL | Public access enabled in module | Private endpoint + VNet integration; disable public access in prod |
 | State storage | Public network access configurable in bootstrap | Private endpoint + network rules; RBAC-only access |
 | CI supply chain | tfsec via remote install script | Pinned version, container job, or official task |

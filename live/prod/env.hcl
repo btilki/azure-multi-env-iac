@@ -17,6 +17,9 @@ locals {
   vm_size              = "Standard_B4ms"
   vm_instance_count    = 3
   admin_username       = "azureadmin"
+  allowed_ssh_cidr     = "0.0.0.0/0"
   db_username          = "appadmin"
+  db_sku_name          = "GP_Standard_D2ds_v4"
+  storage_mb           = 131072
   db_zone              = null
 }

@@ -6,7 +6,7 @@ This repository stores Terraform state in **Azure Blob Storage** using the `azur
 
 - **Bootstrap** (`bootstrap/`): provisions the state resource group, storage account, and private container (see `bootstrap/main.tf`).
 - **Runtime** (`live/root.hcl`): must reference the same resource group, storage account, and container names as bootstrap outputs.
-- **State keys**: one blob per Terragrunt unit, derived from the path under `live/` (for example `dev/networking/terraform.tfstate`, `staging/compute/terraform.tfstate`, `prod/databases/terraform.tfstate`).
+- **State keys**: one blob per Terragrunt unit, derived from the path under `live/` (for example `dev/networking/terraform.tfstate`, `staging/compute/terraform.tfstate`, `prod/databases/terraform.tfstate`). Bootstrap output `state_prefixes` lists the same keys.
 
 Replace placeholder names in docs with your values from `bootstrap/terraform.tfvars` and `live/root.hcl`.
 

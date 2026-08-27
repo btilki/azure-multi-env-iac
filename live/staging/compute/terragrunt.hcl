@@ -32,5 +32,6 @@ inputs = {
   vm_instance_count    = local.env.locals.vm_instance_count
   admin_username       = local.env.locals.admin_username
   admin_ssh_public_key = get_env("TF_VAR_admin_ssh_public_key")
+  allowed_ssh_cidr     = local.env.locals.allowed_ssh_cidr
   tags                 = local.env.locals.tags
 }

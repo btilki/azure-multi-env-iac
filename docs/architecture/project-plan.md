@@ -3,6 +3,8 @@
 Phased delivery checklist for standing up this platform.  
 **Runbook:** [../onboarding/runbook.md](../onboarding/runbook.md) · **Deployment:** [../onboarding/deployment.md](../onboarding/deployment.md)
 
+**Not production-ready.** Completing this plan deploys the reference stacks. Production hardening is tracked in [roadmap.md](roadmap.md) and [SECURITY.md](../../SECURITY.md).
+
 ---
 
 ## Phase 0 — Prerequisites

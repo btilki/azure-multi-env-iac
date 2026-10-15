@@ -8,7 +8,7 @@
 
 Teams outgrow a single Terraform root module when they need **isolated environments**, **shared modules**, **remote state**, and **gated delivery**. This platform implements that pattern on Azure: three environments in one repository, Terragrunt orchestration, Azure Blob remote state, and Azure DevOps pipelines for validate, scan, plan, apply, and drift detection.
 
-The repository delivers **platform infrastructure** on Azure — networking, compute, and PostgreSQL. It is a **reference platform, not production-ready**: SSH, PostgreSQL, and state storage still use lab-oriented network defaults. The AWS equivalent is [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac).
+The repository delivers **platform infrastructure** on Azure — networking, compute, and PostgreSQL. It is a **production-pilot** baseline, not production-ready: SSH, PostgreSQL, and state storage still use lab-oriented network defaults. The AWS counterpart is [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac).
 
 ---
 
@@ -20,7 +20,7 @@ Change flows through the system as follows:
 2. Pipelines run format checks, bootstrap validation, **tfsec**, and **plan** for dev, staging, and prod.
 3. **IaC Apply** (manual) deploys one environment at a time with Azure DevOps **environment approvals** on staging and prod.
 4. **Terragrunt** injects backend and provider configuration; **Terraform modules** provision Azure resources.
-5. **State** is stored in **Azure Blob Storage** with backend locking; **IaC Drift** runs on a weekly schedule.
+5. **State** is stored in **Azure Blob Storage** with backend locking; **IaC Drift** is queued manually (optional weekly schedule is commented out).
 
 ![High-level Azure multi-environment IaC platform](../diagrams/azure-multi-environment-iac-platform.png)
 
@@ -86,7 +86,7 @@ Terragrunt uses one state key per stack under `live/` (for example `dev/networki
 |----------|---------|---------|
 | `azure-pipelines.yml` | PR and push to `main` | Validate, tfsec, plan all environments |
 | `azure-pipelines-apply.yml` | Manual | Apply selected environment |
-| `azure-pipelines-drift.yml` | Weekly and manual | Drift plan with `-detailed-exitcode` |
+| `azure-pipelines-drift.yml` | Manual (weekly schedule commented out) | Drift plan with `-detailed-exitcode` |
 
 Service connections (per environment): `sc-azure-iac-dev`, `sc-azure-iac-staging`, `sc-azure-iac-prod`.
 
@@ -98,9 +98,9 @@ Promotion model: `docs/architecture/environment-promotion.md`
 
 ## Modules
 
-- **networking** — VNet, subnets, resource group
+- **networking** — VNet, public/private subnets, resource group (no NAT or route tables)
 - **compute** — NSG, Linux VMSS, SSH key authentication
-- **databases** — PostgreSQL Flexible Server, database, firewall rules
+- **databases** — PostgreSQL Flexible Server with public access, database, firewall rules
 
 Environment sizing is controlled in `live/*/env.hcl` (for example dev `10.10.0.0/16`, staging `10.20.0.0/16`, prod `10.30.0.0/16`).
 
@@ -154,6 +154,6 @@ Planned improvements are tracked in `docs/architecture/roadmap.md`, including:
 
 ## Closing
 
-This repository implements multi-environment Azure platform infrastructure with documented operations, security controls, and CI/CD gates. It is **not production-ready** as shipped. Source: [github.com/btilki/azure-multi-env-iac](https://github.com/btilki/azure-multi-env-iac).
+This repository implements a **production-pilot** multi-environment Azure platform with documented operations, security controls, and CI/CD gates. It is **not production-ready** as shipped. Source: [github.com/btilki/azure-multi-env-iac](https://github.com/btilki/azure-multi-env-iac).
 
 *Figure 1: `docs/diagrams/azure-multi-environment-iac-platform.png`*

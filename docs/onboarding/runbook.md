@@ -180,7 +180,7 @@ cd ../../bootstrap && terraform destroy
 
 ## Control checklist (before first prod apply)
 
-The `prod` stack is **not production-ready** as shipped. Completing this checklist deploys the isolated `prod` environment; it does **not** mean the workload is hardened for real production use. Also complete [SECURITY.md](../../SECURITY.md) runtime hardening and [roadmap.md](../architecture/roadmap.md).
+The `prod` stack is a **production-pilot** environment, not production-ready as shipped. Completing this checklist deploys the isolated `prod` stack; it does **not** mean the workload is hardened for real production use. Also complete [SECURITY.md](../../SECURITY.md) runtime hardening and [roadmap.md](../architecture/roadmap.md).
 
 - [ ] Bootstrap complete; `live/root.hcl` matches
 - [ ] Service connections and secrets configured

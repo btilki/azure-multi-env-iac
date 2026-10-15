@@ -2,7 +2,7 @@
 
 Get from **zero** to deployed Azure infrastructure in **dev**, **staging**, and **prod**.
 
-> **Not production-ready.** First apply is for labs and non-production use. The `prod` environment is an isolated stack, not a production hardening bar. See [SECURITY.md](../../SECURITY.md).
+> **Production-pilot.** First apply stands up the layout. The `prod` environment is an isolated stack, not a production hardening bar. See [SECURITY.md](../../SECURITY.md).
 
 | Step | Document |
 |------|----------|

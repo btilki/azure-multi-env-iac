@@ -2,7 +2,7 @@
 
 Incident response procedures for the **Azure Multi-Environment IaC Platform**. Adapt severity thresholds and escalation paths to your organization's on-call model.
 
-These procedures assume a lab or non-production deployment. The platform is **not production-ready** as shipped ([SECURITY.md](../../SECURITY.md)).
+These procedures assume a production-pilot deployment. The platform is **not production-ready** as shipped ([SECURITY.md](../../SECURITY.md)).
 
 ---
 
@@ -11,7 +11,7 @@ These procedures assume a lab or non-production deployment. The platform is **no
 | Level | Example | Response |
 |-------|---------|----------|
 | **SEV1** | Wrong destroy scope; prod outage | Stop applies; assess blast radius; rollback via Git + apply |
-| **SEV2** | Drift accumulating; failed scheduled drift | Investigate within 1 hour; open fix PR |
+| **SEV2** | Drift accumulating; failed manual drift run | Investigate within 1 hour; open fix PR |
 | **SEV3** | CI fmt/tfsec failure on main | Fix before next promotion |
 
 ---

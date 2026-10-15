@@ -1,9 +1,9 @@
 # Security
 
-Security model for the **Azure Multi-Environment IaC Platform**.  
+Security model for the **Azure multi-environment IaC platform**.  
 **Deploy:** [docs/onboarding/deployment.md](docs/onboarding/deployment.md) · **Architecture:** [docs/architecture/overview.md](docs/architecture/overview.md) · **Design:** [docs/architecture/design.md](docs/architecture/design.md)
 
-> **Not production-ready.** The as-built baseline is suitable for learning, demos, and non-production labs. It is **not** a production security baseline. Treat `live/prod` as an isolated environment name only. Close the gaps in [Runtime hardening](#runtime-hardening-current-baseline) and [docs/architecture/roadmap.md](docs/architecture/roadmap.md) before any real production use.
+This is a **production-pilot** baseline, not a production security baseline. Treat `live/prod` as an isolated environment name. Close the gaps in [Runtime hardening](#runtime-hardening-current-baseline) and [docs/architecture/roadmap.md](docs/architecture/roadmap.md) before any real production use.
 
 ---
 
@@ -23,7 +23,7 @@ Security model for the **Azure Multi-Environment IaC Platform**.
 | Azure RBAC | Scoped Contributor (or custom) per env subscription/RG |
 | Azure DevOps | Protected `main`, environment approvals on staging/prod |
 | Pipeline auth | OIDC workload identity preferred; SP secret fallback in `terragrunt-job.yml` |
-| State storage | Private container; versioning enabled; restrict public network access in production |
+| State storage | Private container; versioning enabled; public network access still configurable in bootstrap |
 
 Prefer **OIDC federation** for service connections. Ensure deploy identity has blob data access for Terraform state when using RBAC on storage.
 
@@ -43,10 +43,10 @@ Never commit values in `*.tfvars` (except non-secret examples), `*.hcl`, or docu
 
 ## Runtime hardening (current baseline)
 
-| Area | As-built | Production target |
+| Area | As-built | Hardening target |
 |------|----------|-------------------|
-| VM SSH | NSG rule; `allowed_ssh_cidr` in `live/*/env.hcl` (default open) | Restrict `allowed_ssh_cidr`; Azure Bastion |
-| PostgreSQL | Public access enabled in module | Private endpoint; disable public access |
+| VM SSH | NSG rule; `allowed_ssh_cidr` in `live/*/env.hcl` (default `0.0.0.0/0`) | Restrict `allowed_ssh_cidr`; Azure Bastion |
+| PostgreSQL | Public access enabled; RFC1918 firewall rule | Private endpoint; disable public access |
 | State account | Public network access configurable | Private endpoint + network rules |
 
 See [docs/architecture/roadmap.md](docs/architecture/roadmap.md).
@@ -60,7 +60,7 @@ See [docs/architecture/roadmap.md](docs/architecture/roadmap.md).
 | IaC scan | Azure DevOps: tfsec (Security stage) |
 | Format / validate | `terraform fmt`, bootstrap validate, Terragrunt validate (`live/dev`, `live/staging`, `live/prod`) |
 | Provider pin | `~> 4.0` azurerm in `bootstrap/main.tf` and `live/root.hcl` (generated `versions.tf`) |
-| Tool pin | Terraform/Terragrunt versions in `.azuredevops/variables-common.yml` |
+| Tool pin | Terraform `1.6.6`, Terragrunt `1.0.1` in `.azuredevops/variables-common.yml` |
 
 ---
 

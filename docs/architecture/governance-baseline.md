@@ -2,7 +2,7 @@
 
 This document matches how the repo is wired today: **Azure** resources, **Terraform + Terragrunt**, and **Azure DevOps** pipelines under `azure-pipelines*.yml`.
 
-**Not production-ready.** Pipeline gates and environment isolation are in place; runtime networking defaults are still lab-oriented. See [SECURITY.md](../../SECURITY.md) and [roadmap.md](roadmap.md) before treating `prod` as a production environment.
+**Production-pilot.** Pipeline gates and environment isolation are in place; runtime networking defaults are still lab-oriented. See [SECURITY.md](../../SECURITY.md) and [roadmap.md](roadmap.md) before treating `prod` as a production environment.
 
 ## Identity and access
 
@@ -17,10 +17,10 @@ This document matches how the repo is wired today: **Azure** resources, **Terraf
 - **Security scan** — **Security** stage on the same three pipelines (`tfsec`).
 - **Plan all environments** — `azure-pipelines.yml` only, after Security (`dev`, `staging`, `prod`).
 - **Apply one environment** — `azure-pipelines-apply.yml` only, manual run with parameter `targetEnvironment`.
-- **Drift detection** — `azure-pipelines-drift.yml`, weekly on `main` (`0 3 * * 1` UTC) plus manual runs.
+- **Drift detection** — `azure-pipelines-drift.yml`, manual queue. The weekly schedule in the YAML is commented out until Azure DevOps environments and service connections exist.
 
 - Treat **failed CI plan or validate** as a merge blocker for infrastructure changes.
-- Keep **drift** scheduled so unintended changes surface without a PR.
+- Queue **drift** after auth is in place so unintended changes surface without a PR.
 
 ## Version pinning
 

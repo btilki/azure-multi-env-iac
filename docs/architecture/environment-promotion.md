@@ -25,7 +25,7 @@ Promotion of **actual resources** is a separate, controlled step (manual apply p
 
 ## Drift and ongoing hygiene
 
-- **IaC Drift** (`azure-pipelines-drift.yml`) runs a **plan with `-detailed-exitcode`** per environment on a weekly schedule (and can be queued manually).
+- **IaC Drift** (`azure-pipelines-drift.yml`) runs a **plan with `-detailed-exitcode`** per environment when queued manually. The weekly schedule is commented out until service connections and environment secrets exist.
 - Investigate non-zero drift results before they accumulate.
 
 ## Rollback approach

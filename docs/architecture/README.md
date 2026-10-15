@@ -9,6 +9,6 @@
 | [environment-promotion.md](environment-promotion.md) | Branch flow and env promotion |
 | [project-plan.md](project-plan.md) | Delivery phases and checklist |
 | [roadmap.md](roadmap.md) | Planned hardening and extensions |
-| [medium-article.md](medium-article.md) | Architecture article (publication-ready) |
+| [medium-article.md](medium-article.md) | In-repo architecture write-up (not published) |
 
 ![Platform overview](../diagrams/azure-multi-environment-iac-platform.png)

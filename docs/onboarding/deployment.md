@@ -3,7 +3,7 @@
 Phased operator guide for the **Azure Multi-Environment IaC Platform**.  
 **Detailed commands:** [runbook.md](runbook.md) · **Architecture:** [../architecture/overview.md](../architecture/overview.md) · **Security:** [../../SECURITY.md](../../SECURITY.md)
 
-> **Not production-ready.** Use this guide for labs and non-production environments. Do not apply the `prod` stack to real production data until SSH is restricted, PostgreSQL is private, and state storage is locked down ([SECURITY.md](../../SECURITY.md), [roadmap.md](../architecture/roadmap.md)).
+> **Production-pilot.** Use this guide to stand up the layout. Do not apply the `prod` stack to real production data until SSH is restricted, PostgreSQL is private, and state storage is locked down ([SECURITY.md](../../SECURITY.md), [roadmap.md](../architecture/roadmap.md)).
 
 ---
 

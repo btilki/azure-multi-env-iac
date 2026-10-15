@@ -1,8 +1,10 @@
 # Multi-Environment IaC on Azure
 
-Provision and operate **dev**, **staging**, and **prod** Azure infrastructure with **Terraform**, **Terragrunt**, and **Azure DevOps** (validate, tfsec, plan, gated apply, drift detection).
+Provision **dev**, **staging**, and **prod** Azure infrastructure with **Terraform**, **Terragrunt**, and **Azure DevOps** (validate, tfsec, plan, gated apply, drift detection).
 
-> **Not production-ready.** This is a reference platform for layout, CI, and operations. The `prod` folder is a third isolated environment, not a hardened production baseline. Defaults still allow SSH from `0.0.0.0/0`, PostgreSQL public access, and public network access on state storage. Do not use as-is for real production workloads until the items in [SECURITY.md](SECURITY.md) and [docs/architecture/roadmap.md](docs/architecture/roadmap.md) are completed.
+This is a **production-pilot** baseline: a working multi-environment layout with remote state and gated CI. Harden it before using it as a real prod subscription — see [SECURITY.md](SECURITY.md) and [docs/architecture/roadmap.md](docs/architecture/roadmap.md).
+
+**Related platform:** [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac) (same layout on AWS).
 
 ![Architecture overview](./docs/diagrams/azure-multi-environment-iac-platform.png)
 
@@ -20,8 +22,6 @@ Provision and operate **dev**, **staging**, and **prod** Azure infrastructure wi
 | [docs/incident-response/](docs/incident-response/) | Severity, escalation, rollback |
 | [SECURITY.md](SECURITY.md) | Security model and controls |
 | [CHANGELOG.md](CHANGELOG.md) | Repository change history |
-
-**Sibling repository (AWS):** [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac)
 
 ---
 
@@ -44,11 +44,11 @@ make tg-init-dev tg-plan-dev          # then tg-apply-dev when ready
 
 ## Platform capabilities
 
-- **IaC:** VNet, subnets, NSG, Linux VMSS, PostgreSQL Flexible Server (`modules/`, `live/`)
+- **IaC:** VNet, public/private subnets, NSG, Linux VMSS, PostgreSQL Flexible Server (`modules/`, `live/`)
 - **Orchestration:** Terragrunt multi-env layout, remote state in Azure Storage (`bootstrap/`, `live/root.hcl`)
 - **CI:** Azure DevOps validate, fmt, tfsec, plan all environments on PR/main
-- **Delivery:** Manual apply per environment with ADO environment gates
-- **Operations:** Weekly drift detection pipeline
+- **Delivery:** Manual apply per environment with Azure DevOps environment gates
+- **Operations:** Manual drift detection (`azure-pipelines-drift.yml`; optional weekly schedule is commented out)
 
 ---
 
@@ -78,8 +78,8 @@ There are **no** `.tf` files at the repository root. Terraform version and provi
 ## Scope
 
 - Three Azure environments with separate address spaces and sizing (`live/*/env.hcl`)
-- AWS equivalent multi-environment IaC: [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac)
 - Secrets via Azure DevOps variables or local exports — never committed
+- **Production-pilot baseline:** no NAT or route tables; public subnets are unused by compute and databases; PostgreSQL allows public access; SSH CIDR defaults to `0.0.0.0/0`. Azure DevOps service connections must exist before pipelines succeed. See [SECURITY.md](SECURITY.md) and the [roadmap](docs/architecture/roadmap.md).
 
 ---
 
@@ -88,7 +88,7 @@ There are **no** `.tf` files at the repository root. Terraform version and provi
 ```bash
 make help              # all targets
 make validate          # fmt checks + bootstrap + Terragrunt validate (all envs, no backend)
-make tg-fmt-check      # terragrunt hcl fmt --check
+make tg-fmt-check      # terragrunt hcl fmt --check  (Terragrunt 1.x)
 pre-commit install     # optional — see .pre-commit-config.yaml
 ```
 

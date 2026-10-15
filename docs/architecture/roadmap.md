@@ -2,7 +2,7 @@
 
 Planned improvements beyond the current as-built baseline. Items are prioritized in the platform engineering backlog; timelines depend on change windows and dependency work.
 
-**This platform is not production-ready** until the security hardening items below are complete. The `prod` stack name does not mean the workload is safe for production traffic or data.
+This is a **production-pilot** baseline. It is **not production-ready** until the security hardening items below are complete. The `prod` stack name does not mean the workload is safe for production traffic or data.
 
 ---
 
@@ -34,8 +34,6 @@ Planned improvements beyond the current as-built baseline. Items are prioritized
 
 ---
 
-## Multi-cloud parity
+## Related platform
 
-Align documentation and pipeline patterns with the AWS sibling repository:
-
-[aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac)
+Keep documentation and pipeline patterns aligned with the AWS counterpart: [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac).

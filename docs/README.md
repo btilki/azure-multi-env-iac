@@ -1,8 +1,8 @@
 # Documentation
 
-Index for the **Azure Multi-Environment IaC Platform**.
+Index for the **Azure multi-environment IaC platform**.
 
-**Not production-ready** — see [SECURITY.md](../SECURITY.md) and [architecture/roadmap.md](architecture/roadmap.md).
+**Production-pilot** baseline — see [SECURITY.md](../SECURITY.md) and [architecture/roadmap.md](architecture/roadmap.md).
 
 | Area | Path | Description |
 |------|------|-------------|
@@ -11,8 +11,6 @@ Index for the **Azure Multi-Environment IaC Platform**.
 | Runbooks | [runbooks/](runbooks/) | CI/Terraform, state ops, troubleshooting |
 | Diagrams | [diagrams/](diagrams/) | Architecture PNG |
 | Incident response | [incident-response/](incident-response/) | Severity, rollback, escalation |
-| Medium article | [architecture/medium-article.md](architecture/medium-article.md) | Architecture article (publication-ready) |
+| Architecture article | [architecture/medium-article.md](architecture/medium-article.md) | In-repo architecture write-up (not published) |
 
 **Root:** [README.md](../README.md) · [SECURITY.md](../SECURITY.md) · [CHANGELOG.md](../CHANGELOG.md) · [Makefile](../Makefile)
-
-**Sibling repository (AWS):** [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac)

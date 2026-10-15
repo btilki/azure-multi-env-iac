@@ -1,16 +1,16 @@
 # Architecture & design — Azure multi-environment IaC
 
-**Status:** As-built reference platform — **not production-ready** (matches repository layout; security hardening is on the [roadmap](roadmap.md))  
+**Status:** Production-pilot baseline (matches repository layout; harden before real prod — [roadmap](roadmap.md))  
 **Companion:** [project-plan.md](./project-plan.md) · [overview.md](./overview.md) · [README.md](../../README.md)  
-**Sibling repository (AWS):** [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac)
+**Related platform:** [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac) (same layout on AWS)
 
 ---
 
 ## 1. Executive summary
 
-This repository provisions **shared platform infrastructure** on Azure across **dev**, **staging**, and **prod**. A one-time **bootstrap** stack creates remote state storage. **Terragrunt** wraps Terraform modules and injects backend configuration from `live/root.hcl`. **Azure DevOps** runs formatting checks, bootstrap validation, **tfsec**, environment-scoped plans, manual applies, and weekly drift detection.
+This repository provisions **shared platform infrastructure** on Azure across **dev**, **staging**, and **prod**. A one-time **bootstrap** stack creates remote state storage. **Terragrunt** wraps Terraform modules and injects backend configuration from `live/root.hcl`. **Azure DevOps** runs formatting checks, bootstrap validation, **tfsec**, environment-scoped plans, manual applies, and drift detection.
 
-The as-built defaults are **not production-ready** (open SSH CIDR, public PostgreSQL, public state-account network access). `prod` is a third isolated environment, not a claim of production hardening.
+This is a **production-pilot** baseline, not production-ready: open SSH CIDR, public PostgreSQL, public state-account network access, no NAT or route tables. `prod` is a third isolated environment, not a claim of production hardening.
 
 ---
 
@@ -21,7 +21,7 @@ The as-built defaults are **not production-ready** (open SSH CIDR, public Postgr
 - **Repeatable modules** for network, compute, and PostgreSQL.
 - **Environment isolation** via separate Terragrunt folders and distinct `env.hcl` inputs (CIDR, VM SKU, instance count, DB SKU/storage, SSH CIDR, tags).
 - **Pipeline gates** before merge and before apply.
-- **Operational hygiene**: drift pipeline, documented promotion and rollback paths.
+- **Operational hygiene**: manual drift pipeline, documented promotion and rollback paths.
 
 ### 2.2 Non-goals
 
@@ -56,7 +56,7 @@ The as-built defaults are **not production-ready** (open SSH CIDR, public Postgr
 
 ### 4.1 `modules/networking`
 
-- Resource group, VNet, public/private subnets (CIDR lists from `env.hcl`).
+- Resource group, VNet, public/private subnets (CIDR lists from `env.hcl`). No route tables, NAT, or NSG in this module.
 
 ### 4.2 `modules/compute`
 
@@ -64,7 +64,7 @@ The as-built defaults are **not production-ready** (open SSH CIDR, public Postgr
 
 ### 4.3 `modules/databases`
 
-- PostgreSQL Flexible Server, application database, firewall rule for private RFC1918 ranges.
+- PostgreSQL Flexible Server (public access enabled), application database, firewall rule for private RFC1918 ranges. Not attached to a VNet subnet.
 
 **Dependencies:** `compute` and `databases` depend on `networking` outputs via Terragrunt `dependency` blocks. CI uses mock outputs and `TG_SKIP_DEP_OUTPUTS` for plan-only runs.
 
@@ -101,7 +101,7 @@ Details: [state-strategy.md](state-strategy.md)
 | PostgreSQL storage | 32768 MB | 65536 MB | 131072 MB |
 | SSH source CIDR | 0.0.0.0/0 | 0.0.0.0/0 | 0.0.0.0/0 |
 
-Source: `live/*/env.hcl`. Restrict `allowed_ssh_cidr` per environment before production use.
+Source: `live/*/env.hcl`. Restrict `allowed_ssh_cidr` per environment before real prod use.
 
 ---
 

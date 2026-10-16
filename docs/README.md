@@ -23,7 +23,6 @@ Index for the **Azure multi-environment IaC platform**. The project story is in 
 | Runbooks | [runbooks/](runbooks/) | CI/Terraform, state ops, troubleshooting |
 | Diagrams | [diagrams/](diagrams/) | Mermaid figures (change flow, Terragrunt/state, Azure topology) |
 | Incident response | [incident-response/](incident-response/) | Severity, rollback, escalation |
-| Architecture article | [architecture/medium-article.md](architecture/medium-article.md) | In-repo architecture write-up (not published) |
 | Contributing | [../CONTRIBUTING.md](../CONTRIBUTING.md) | Local validate, TFLint, PR expectations |
 
 **Root:** [README.md](../README.md) · [SECURITY.md](../SECURITY.md) · [CHANGELOG.md](../CHANGELOG.md) · [Makefile](../Makefile)

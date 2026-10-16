@@ -9,6 +9,5 @@
 | [environment-promotion.md](environment-promotion.md) | Branch flow and env promotion |
 | [project-plan.md](project-plan.md) | Delivery phases and checklist |
 | [roadmap.md](roadmap.md) | Planned hardening and extensions |
-| [medium-article.md](medium-article.md) | In-repo architecture write-up (not published) |
 
 Figures: [../diagrams/README.md](../diagrams/README.md) (Mermaid: change flow, Terragrunt/state, Azure topology).

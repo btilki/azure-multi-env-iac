@@ -6,9 +6,9 @@ This is a **production-pilot** baseline. The figures match as-built modules, not
 
 | Figure | Source | Used in |
 |--------|--------|---------|
-| 1. Change flow | [01-change-flow.mmd](01-change-flow.mmd) | README, overview CI/CD, environment promotion, architecture article |
-| 2. Terragrunt and state | [02-terragrunt-state.mmd](02-terragrunt-state.mmd) | design, state strategy, architecture article |
-| 3. Azure topology | [03-azure-topology.mmd](03-azure-topology.mmd) | overview topology, design modules, architecture article |
+| 1. Change flow | [01-change-flow.mmd](01-change-flow.mmd) | README, overview CI/CD, environment promotion |
+| 2. Terragrunt and state | [02-terragrunt-state.mmd](02-terragrunt-state.mmd) | design, state strategy |
+| 3. Azure topology | [03-azure-topology.mmd](03-azure-topology.mmd) | overview topology, design modules |
 
 ---
 

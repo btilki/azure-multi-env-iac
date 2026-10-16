@@ -6,9 +6,7 @@ This is a **production-pilot** baseline: stand up the layout, then harden before
 
 **Related platform:** [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac) (same layout on AWS).
 
-**Full design:** [design.md](design.md) · **Plan:** [project-plan.md](project-plan.md)
-
-![Platform overview](../diagrams/azure-multi-environment-iac-platform.png)
+**Full design:** [design.md](design.md) · **Plan:** [project-plan.md](project-plan.md) · **Figures:** [../diagrams/README.md](../diagrams/README.md)
 
 ---
 
@@ -16,7 +14,7 @@ This is a **production-pilot** baseline: stand up the layout, then harden before
 
 - Infrastructure as code with reusable modules (`networking`, `compute`, `databases`)
 - Three isolated environments: `dev`, `staging`, `prod` (separate VNets, SKUs, scale)
-- Automated validate → security scan → plan on PR and `main`
+- Automated validate → TFLint → security scan → plan on PR and `main`
 - Gated manual apply per environment; manual drift detection (optional weekly schedule in the pipeline YAML)
 - Secrets only via Azure DevOps variables or local shell exports
 
@@ -33,13 +31,30 @@ This is a **production-pilot** baseline: stand up the layout, then harden before
 
 Terragrunt units under `live/<env>/`: `networking` → `compute` / `databases`. Compute uses a private subnet; databases are not VNet-integrated. Public subnets are created but unused by the other stacks.
 
+```mermaid
+flowchart TB
+  subgraph env["Per environment as-built"]
+    RG["Resource group"]
+    VNet["VNet"]
+    Pub["Public subnets<br/>created, unused"]
+    Priv["Private subnets"]
+    VMSS["Linux VMSS<br/>NSG on NIC"]
+    PG["PostgreSQL Flexible Server<br/>public access on"]
+    RG --> VNet
+    RG --> PG
+    VNet --> Pub
+    VNet --> Priv
+    Priv --> VMSS
+  end
+```
+
 ---
 
 ## CI/CD
 
 | Pipeline | Trigger | Stages |
 |----------|---------|--------|
-| **IaC CI** (`azure-pipelines.yml`) | PR + push to `main` | Validate, Security (tfsec), Plan all envs |
+| **IaC CI** (`azure-pipelines.yml`) | PR + push to `main` | Validate (fmt, TFLint, Terragrunt), Security (tfsec), Plan all envs |
 | **IaC Apply** (`azure-pipelines-apply.yml`) | Manual | Validate, Security, Apply one env |
 | **IaC Drift** (`azure-pipelines-drift.yml`) | Manual; weekly schedule commented out | Validate, Security, Drift plan all envs |
 
@@ -49,6 +64,20 @@ Terragrunt units under `live/<env>/`: `networking` → `compute` / `databases`. 
 | Approvals | Azure DevOps environments (`staging`, `prod`) |
 
 Service connections (exact names): `sc-azure-iac-dev`, `sc-azure-iac-staging`, `sc-azure-iac-prod`.
+
+```mermaid
+flowchart LR
+  Dev["Developer"] -->|"git push / PR"| CI["IaC CI<br/>validate, tfsec, plan"]
+  Dev -->|"manual"| Apply["IaC Apply<br/>one environment"]
+  Dev -->|"manual"| Drift["IaC Drift<br/>plan only"]
+  CI --> Main["main"]
+  Apply --> Gates["ADO environments<br/>staging / prod approvals"]
+  Gates --> Live["Terragrunt live/"]
+  Drift --> Live
+  Secrets["Secrets and OIDC<br/>TF_VAR_DB_PASSWORD<br/>TF_VAR_ADMIN_SSH_PUBLIC_KEY<br/>sc-azure-iac-*"] -.-> CI
+  Secrets -.-> Apply
+  Secrets -.-> Drift
+```
 
 ---
 

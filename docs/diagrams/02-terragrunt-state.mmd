@@ -1,0 +1,15 @@
+flowchart TB
+  Boot["bootstrap/"] -->|"once"| Store["Azure Storage<br/>tfstate container<br/>blob lease lock"]
+  Root["live/root.hcl"] -->|"backend and generated provider"| Store
+  Root --> Dev["live/dev"]
+  Root --> Stg["live/staging"]
+  Root --> Prod["live/prod"]
+  Dev --> Net["modules/networking"]
+  Dev --> Comp["modules/compute"]
+  Dev --> DB["modules/databases"]
+  Stg --> Net
+  Stg --> Comp
+  Stg --> DB
+  Prod --> Net
+  Prod --> Comp
+  Prod --> DB

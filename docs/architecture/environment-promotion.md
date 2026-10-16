@@ -2,6 +2,22 @@
 
 This describes how changes move from a branch to live infrastructure using the **three Azure DevOps pipelines** in the repo root.
 
+```mermaid
+flowchart LR
+  Dev["Developer"] -->|"git push / PR"| CI["IaC CI<br/>validate, tfsec, plan"]
+  Dev -->|"manual"| Apply["IaC Apply<br/>one environment"]
+  Dev -->|"manual"| Drift["IaC Drift<br/>plan only"]
+  CI --> Main["main"]
+  Apply --> Gates["ADO environments<br/>staging / prod approvals"]
+  Gates --> Live["Terragrunt live/"]
+  Drift --> Live
+  Secrets["Secrets and OIDC<br/>TF_VAR_DB_PASSWORD<br/>TF_VAR_ADMIN_SSH_PUBLIC_KEY<br/>sc-azure-iac-*"] -.-> CI
+  Secrets -.-> Apply
+  Secrets -.-> Drift
+```
+
+Source: [../diagrams/README.md](../diagrams/README.md#1-change-flow).
+
 ## Branch and PR flow
 
 - **Feature branches**: open a PR to `main`. The **IaC CI** pipeline (`azure-pipelines.yml`) should run: validate, `tfsec`, and **plan for all environments** (`dev`, `staging`, `prod`).

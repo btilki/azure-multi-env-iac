@@ -4,6 +4,14 @@ All notable changes to this platform repository (IaC, CI, documentation) are doc
 
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.1] - 2026-10-16
+
+### Changed
+
+- Replaced the keyboard-drawn architecture PNG with three Mermaid figures (change flow, Terragrunt/state, Azure topology) in `docs/diagrams/` and the docs that used the PNG
+- Added TFLint (AzureRM ruleset) and pinned tfsec in CI; module `versions.tf`; CONTRIBUTING and PR template
+- Expanded `docs/README.md` with a start-here reading order
+
 ## [1.1.0] - 2026-10-15
 
 ### Changed

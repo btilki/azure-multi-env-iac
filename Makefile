@@ -8,7 +8,7 @@ LIVE_PROD     := live/prod
 LIVE_ENVS     := $(LIVE_DEV) $(LIVE_STAGING) $(LIVE_PROD)
 STACKS        := networking compute databases
 
-.PHONY: help fmt fmt-check validate tg-validate tg-fmt-check bootstrap-init bootstrap-plan bootstrap-apply bootstrap-destroy \
+.PHONY: help fmt fmt-check validate tflint tg-validate tg-fmt-check bootstrap-init bootstrap-plan bootstrap-apply bootstrap-destroy \
         tg-init-dev tg-plan-dev tg-apply-dev tg-destroy-dev \
         tg-init-staging tg-plan-staging tg-apply-staging tg-destroy-staging \
         tg-init-prod tg-plan-prod tg-apply-prod tg-destroy-prod
@@ -17,7 +17,8 @@ help:
 	@echo "Targets:"
 	@echo "  fmt                 - terraform fmt -recursive"
 	@echo "  fmt-check           - terraform fmt -check -recursive"
-	@echo "  validate            - fmt checks + bootstrap validate + Terragrunt validate (all envs, no backend)"
+	@echo "  validate            - fmt checks + TFLint + bootstrap validate + Terragrunt validate (all envs, no backend)"
+	@echo "  tflint              - tflint on bootstrap and modules (requires tflint)"
 	@echo "  tg-validate         - terragrunt validate all stacks in live/dev, live/staging, live/prod (no backend)"
 	@echo "  tg-fmt-check        - terragrunt hcl fmt --check"
 	@echo "  bootstrap-init      - terraform init in bootstrap/"
@@ -43,7 +44,14 @@ fmt:
 fmt-check:
 	terraform fmt -check -recursive
 
-validate: fmt-check tg-fmt-check bootstrap-validate tg-validate
+validate: fmt-check tg-fmt-check tflint bootstrap-validate tg-validate
+
+tflint:
+	tflint --init --config "$(CURDIR)/.tflint.hcl"
+	@for dir in $(BOOTSTRAP_DIR) modules/networking modules/compute modules/databases; do \
+	  echo "TFLint $$dir..."; \
+	  tflint --chdir="$$dir" --config "$(CURDIR)/.tflint.hcl"; \
+	done
 
 bootstrap-validate:
 	terraform -chdir=$(BOOTSTRAP_DIR) init -input=false -backend=false

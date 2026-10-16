@@ -173,6 +173,7 @@ cd live/dev && terragrunt run --all -- destroy
 cd ../staging && terragrunt run --all -- destroy
 cd ../prod && terragrunt run --all -- destroy
 
+# Bootstrap storage has prevent_destroy. Remove those lifecycle blocks in bootstrap/main.tf, then:
 cd ../../bootstrap && terraform destroy
 ```
 

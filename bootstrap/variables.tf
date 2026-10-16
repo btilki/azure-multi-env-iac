@@ -1,9 +1,3 @@
-variable "project_name" {
-  description = "Project prefix for resource naming."
-  type        = string
-  default     = "multi-iac"
-}
-
 variable "azure_location" {
   description = "Azure location for state resources."
   type        = string

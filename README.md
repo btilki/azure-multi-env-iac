@@ -6,7 +6,21 @@ This is a **production-pilot** baseline: a working multi-environment layout with
 
 **Related platform:** [aws-multi-env-iac](https://github.com/btilki/aws-multi-env-iac) (same layout on AWS).
 
-![Architecture overview](./docs/diagrams/azure-multi-environment-iac-platform.png)
+```mermaid
+flowchart LR
+  Dev["Developer"] -->|"git push / PR"| CI["IaC CI<br/>validate, tfsec, plan"]
+  Dev -->|"manual"| Apply["IaC Apply<br/>one environment"]
+  Dev -->|"manual"| Drift["IaC Drift<br/>plan only"]
+  CI --> Main["main"]
+  Apply --> Gates["ADO environments<br/>staging / prod approvals"]
+  Gates --> Live["Terragrunt live/"]
+  Drift --> Live
+  Secrets["Secrets and OIDC<br/>TF_VAR_DB_PASSWORD<br/>TF_VAR_ADMIN_SSH_PUBLIC_KEY<br/>sc-azure-iac-*"] -.-> CI
+  Secrets -.-> Apply
+  Secrets -.-> Drift
+```
+
+All three figures: [docs/diagrams/](docs/diagrams/). Reading order: [docs/README.md](docs/README.md).
 
 ---
 
@@ -18,10 +32,11 @@ This is a **production-pilot** baseline: a working multi-environment layout with
 | [docs/architecture/](docs/architecture/) | Overview, design, state, governance, promotion, roadmap |
 | [docs/onboarding/](docs/onboarding/) | Deploy guide and full runbook |
 | [docs/runbooks/](docs/runbooks/) | Troubleshooting and operations |
-| [docs/diagrams/](docs/diagrams/) | Architecture PNG |
+| [docs/diagrams/](docs/diagrams/) | Mermaid figures (change flow, Terragrunt/state, Azure topology) |
 | [docs/incident-response/](docs/incident-response/) | Severity, escalation, rollback |
 | [SECURITY.md](SECURITY.md) | Security model and controls |
 | [CHANGELOG.md](CHANGELOG.md) | Repository change history |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Local checks, TFLint, PR expectations |
 
 ---
 
@@ -46,7 +61,7 @@ make tg-init-dev tg-plan-dev          # then tg-apply-dev when ready
 
 - **IaC:** VNet, public/private subnets, NSG, Linux VMSS, PostgreSQL Flexible Server (`modules/`, `live/`)
 - **Orchestration:** Terragrunt multi-env layout, remote state in Azure Storage (`bootstrap/`, `live/root.hcl`)
-- **CI:** Azure DevOps validate, fmt, tfsec, plan all environments on PR/main
+- **CI:** Azure DevOps validate, fmt, TFLint, tfsec, plan all environments on PR/main
 - **Delivery:** Manual apply per environment with Azure DevOps environment gates
 - **Operations:** Manual drift detection (`azure-pipelines-drift.yml`; optional weekly schedule is commented out)
 
@@ -87,7 +102,8 @@ There are **no** `.tf` files at the repository root. Terraform version and provi
 
 ```bash
 make help              # all targets
-make validate          # fmt checks + bootstrap + Terragrunt validate (all envs, no backend)
+make validate          # fmt + TFLint + bootstrap + Terragrunt validate (all envs, no backend)
+make tflint            # AzureRM TFLint on bootstrap and modules
 make tg-fmt-check      # terragrunt hcl fmt --check  (Terragrunt 1.x)
 pre-commit install     # optional — see .pre-commit-config.yaml
 ```

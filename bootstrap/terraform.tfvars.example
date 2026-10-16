@@ -3,4 +3,3 @@ state_storage_account_name = "replacewithuniquestorageacct"
 state_container_name       = "tfstate"
 state_public_network_access_enabled = true
 azure_location             = "westeurope"
-project_name               = "multi-iac"

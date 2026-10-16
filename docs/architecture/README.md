@@ -11,4 +11,4 @@
 | [roadmap.md](roadmap.md) | Planned hardening and extensions |
 | [medium-article.md](medium-article.md) | In-repo architecture write-up (not published) |
 
-![Platform overview](../diagrams/azure-multi-environment-iac-platform.png)
+Figures: [../diagrams/README.md](../diagrams/README.md) (Mermaid: change flow, Terragrunt/state, Azure topology).

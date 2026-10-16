@@ -10,6 +10,24 @@ This repository stores Terraform state in **Azure Blob Storage** using the `azur
 
 Replace placeholder names in docs with your values from `bootstrap/terraform.tfvars` and `live/root.hcl`.
 
+```mermaid
+flowchart TB
+  Boot["bootstrap/"] -->|"once"| Store["Azure Storage<br/>tfstate container<br/>blob lease lock"]
+  Root["live/root.hcl"] -->|"backend and generated provider"| Store
+  Root --> Dev["live/dev"]
+  Root --> Stg["live/staging"]
+  Root --> Prod["live/prod"]
+  Dev --> Net["modules/networking"]
+  Dev --> Comp["modules/compute"]
+  Dev --> DB["modules/databases"]
+  Stg --> Net
+  Stg --> Comp
+  Stg --> DB
+  Prod --> Net
+  Prod --> Comp
+  Prod --> DB
+```
+
 ## Security controls
 
 - Storage encrypted at rest (platform-managed keys in the bootstrap stack).
@@ -17,6 +35,7 @@ Replace placeholder names in docs with your values from `bootstrap/terraform.tfv
 - Container access: private (`container_access_type = "private"`).
 - **Public network access** on the state account is configurable via `state_public_network_access_enabled`. Restrict access and use private endpoints per organizational policy (see [roadmap.md](roadmap.md)).
 - **Locking**: handled by the Terraform Azure backend (blob lease).
+- **Destroy protection**: bootstrap storage account and container set `lifecycle.prevent_destroy = true`. To tear down bootstrap, remove those blocks first, then `terraform destroy`.
 
 ## Naming guidance
 

@@ -1,0 +1,14 @@
+flowchart TB
+  subgraph env["Per environment as-built"]
+    RG["Resource group"]
+    VNet["VNet"]
+    Pub["Public subnets<br/>created, unused"]
+    Priv["Private subnets"]
+    VMSS["Linux VMSS<br/>NSG on NIC"]
+    PG["PostgreSQL Flexible Server<br/>public access on"]
+    RG --> VNet
+    RG --> PG
+    VNet --> Pub
+    VNet --> Priv
+    Priv --> VMSS
+  end

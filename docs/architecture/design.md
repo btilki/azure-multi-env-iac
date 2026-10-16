@@ -68,6 +68,23 @@ This is a **production-pilot** baseline, not production-ready: open SSH CIDR, pu
 
 **Dependencies:** `compute` and `databases` depend on `networking` outputs via Terragrunt `dependency` blocks. CI uses mock outputs and `TG_SKIP_DEP_OUTPUTS` for plan-only runs.
 
+```mermaid
+flowchart TB
+  subgraph env["Per environment as-built"]
+    RG["Resource group"]
+    VNet["VNet"]
+    Pub["Public subnets<br/>created, unused"]
+    Priv["Private subnets"]
+    VMSS["Linux VMSS<br/>NSG on NIC"]
+    PG["PostgreSQL Flexible Server<br/>public access on"]
+    RG --> VNet
+    RG --> PG
+    VNet --> Pub
+    VNet --> Priv
+    Priv --> VMSS
+  end
+```
+
 ---
 
 ## 5. Identity and secrets
@@ -87,6 +104,24 @@ Details: [governance-baseline.md](governance-baseline.md)
 - Keep `live/root.hcl` aligned with `bootstrap/terraform.tfvars`.
 
 Details: [state-strategy.md](state-strategy.md)
+
+```mermaid
+flowchart TB
+  Boot["bootstrap/"] -->|"once"| Store["Azure Storage<br/>tfstate container<br/>blob lease lock"]
+  Root["live/root.hcl"] -->|"backend and generated provider"| Store
+  Root --> Dev["live/dev"]
+  Root --> Stg["live/staging"]
+  Root --> Prod["live/prod"]
+  Dev --> Net["modules/networking"]
+  Dev --> Comp["modules/compute"]
+  Dev --> DB["modules/databases"]
+  Stg --> Net
+  Stg --> Comp
+  Stg --> DB
+  Prod --> Net
+  Prod --> Comp
+  Prod --> DB
+```
 
 ---
 
@@ -108,5 +143,6 @@ Source: `live/*/env.hcl`. Restrict `allowed_ssh_cidr` per environment before rea
 ## 8. Related documents
 
 - [environment-promotion.md](environment-promotion.md)
+- [../diagrams/README.md](../diagrams/README.md)
 - [../onboarding/deployment.md](../onboarding/deployment.md)
 - [../../SECURITY.md](../../SECURITY.md)

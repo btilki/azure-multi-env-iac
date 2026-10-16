@@ -1,6 +1,8 @@
 variables:
   terraformVersion: "1.6.6"
   terragruntVersion: "1.0.1"
+  tflintVersion: "0.55.0"
+  tfsecVersion: "v1.28.13"
   TG_NON_INTERACTIVE: "true"
   TG_DISABLE_BUCKET_UPDATE: "true"
   TERRAGRUNT_NON_INTERACTIVE: "true"

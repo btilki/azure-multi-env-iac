@@ -22,11 +22,23 @@ Change flows through the system as follows:
 4. **Terragrunt** injects backend and provider configuration; **Terraform modules** provision Azure resources.
 5. **State** is stored in **Azure Blob Storage** with backend locking; **IaC Drift** is queued manually (optional weekly schedule is commented out).
 
-![High-level Azure multi-environment IaC platform](../diagrams/azure-multi-environment-iac-platform.png)
+*Figure 1 — Change flow: source control, Azure DevOps pipelines, secrets, and gated apply.*
 
-*Figure 1 — Source control, Azure DevOps, Terragrunt, modules, Azure resources, and remote state.*
+```mermaid
+flowchart LR
+  Dev["Developer"] -->|"git push / PR"| CI["IaC CI<br/>validate, tfsec, plan"]
+  Dev -->|"manual"| Apply["IaC Apply<br/>one environment"]
+  Dev -->|"manual"| Drift["IaC Drift<br/>plan only"]
+  CI --> Main["main"]
+  Apply --> Gates["ADO environments<br/>staging / prod approvals"]
+  Gates --> Live["Terragrunt live/"]
+  Drift --> Live
+  Secrets["Secrets and OIDC<br/>TF_VAR_DB_PASSWORD<br/>TF_VAR_ADMIN_SSH_PUBLIC_KEY<br/>sc-azure-iac-*"] -.-> CI
+  Secrets -.-> Apply
+  Secrets -.-> Drift
+```
 
-Design details: `docs/architecture/design.md` · Operator runbook: `docs/onboarding/runbook.md`
+Design details: `docs/architecture/design.md` · Operator runbook: `docs/onboarding/runbook.md` · All figures: `docs/diagrams/`
 
 ---
 
@@ -66,6 +78,26 @@ inputs = {
 
 Compute and database stacks declare a `dependency` on networking and use mock outputs during CI plan jobs (`TG_SKIP_DEP_OUTPUTS`).
 
+*Figure 2 — Terragrunt live trees, shared modules, and Azure Storage remote state.*
+
+```mermaid
+flowchart TB
+  Boot["bootstrap/"] -->|"once"| Store["Azure Storage<br/>tfstate container<br/>blob lease lock"]
+  Root["live/root.hcl"] -->|"backend and generated provider"| Store
+  Root --> Dev["live/dev"]
+  Root --> Stg["live/staging"]
+  Root --> Prod["live/prod"]
+  Dev --> Net["modules/networking"]
+  Dev --> Comp["modules/compute"]
+  Dev --> DB["modules/databases"]
+  Stg --> Net
+  Stg --> Comp
+  Stg --> DB
+  Prod --> Net
+  Prod --> Comp
+  Prod --> DB
+```
+
 ---
 
 ## Bootstrap and remote state
@@ -103,6 +135,25 @@ Promotion model: `docs/architecture/environment-promotion.md`
 - **databases** — PostgreSQL Flexible Server with public access, database, firewall rules
 
 Environment sizing is controlled in `live/*/env.hcl` (for example dev `10.10.0.0/16`, staging `10.20.0.0/16`, prod `10.30.0.0/16`).
+
+*Figure 3 — As-built Azure topology per environment (no NAT; public subnets unused; PostgreSQL public access).*
+
+```mermaid
+flowchart TB
+  subgraph env["Per environment as-built"]
+    RG["Resource group"]
+    VNet["VNet"]
+    Pub["Public subnets<br/>created, unused"]
+    Priv["Private subnets"]
+    VMSS["Linux VMSS<br/>NSG on NIC"]
+    PG["PostgreSQL Flexible Server<br/>public access on"]
+    RG --> VNet
+    RG --> PG
+    VNet --> Pub
+    VNet --> Priv
+    Priv --> VMSS
+  end
+```
 
 ---
 
@@ -156,4 +207,4 @@ Planned improvements are tracked in `docs/architecture/roadmap.md`, including:
 
 This repository implements a **production-pilot** multi-environment Azure platform with documented operations, security controls, and CI/CD gates. It is **not production-ready** as shipped. Source: [github.com/btilki/azure-multi-env-iac](https://github.com/btilki/azure-multi-env-iac).
 
-*Figure 1: `docs/diagrams/azure-multi-environment-iac-platform.png`*
+*Figures: `docs/diagrams/` (Mermaid change flow, Terragrunt/state, Azure topology).*

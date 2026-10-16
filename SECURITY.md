@@ -57,10 +57,11 @@ See [docs/architecture/roadmap.md](docs/architecture/roadmap.md).
 
 | Control | Tool / location |
 |---------|-----------------|
-| IaC scan | Azure DevOps: tfsec (Security stage) |
+| IaC lint | TFLint + AzureRM ruleset (`.tflint.hcl`, Validate stage) |
+| IaC scan | Azure DevOps: tfsec pinned in `.azuredevops/variables-common.yml` (Security stage) |
 | Format / validate | `terraform fmt`, bootstrap validate, Terragrunt validate (`live/dev`, `live/staging`, `live/prod`) |
-| Provider pin | `~> 4.0` azurerm in `bootstrap/main.tf` and `live/root.hcl` (generated `versions.tf`) |
-| Tool pin | Terraform `1.6.6`, Terragrunt `1.0.1` in `.azuredevops/variables-common.yml` |
+| Provider pin | `~> 4.0` azurerm in `bootstrap/main.tf`, `modules/*/versions.tf`, and `live/root.hcl` (generated `versions.tf`) |
+| Tool pin | Terraform `1.6.6`, Terragrunt `1.0.1`, TFLint, tfsec in `.azuredevops/variables-common.yml` |
 
 ---
 

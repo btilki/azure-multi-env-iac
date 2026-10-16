@@ -31,10 +31,18 @@ resource "azurerm_storage_account" "tfstate" {
   blob_properties {
     versioning_enabled = true
   }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "azurerm_storage_container" "tfstate" {
   name                  = var.state_container_name
   storage_account_id    = azurerm_storage_account.tfstate.id
   container_access_type = "private"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }

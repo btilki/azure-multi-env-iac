@@ -8,9 +8,9 @@ Azure DevOps pipeline failures for **IaC CI**, **IaC Apply**, and **IaC Drift**.
 
 | File | Purpose |
 |------|---------|
-| `azure-pipelines.yml` | PR/main: validate, tfsec, plan all envs |
+| `azure-pipelines.yml` | PR/main: validate, TFLint, tfsec, plan all envs |
 | `azure-pipelines-apply.yml` | Manual apply; parameter `targetEnvironment` |
-| `azure-pipelines-drift.yml` | Weekly + manual drift plan |
+| `azure-pipelines-drift.yml` | Manual drift plan (weekly schedule commented out) |
 | `.azuredevops/terragrunt-job.yml` | Shared Terragrunt execution + auth |
 
 ---
@@ -48,7 +48,15 @@ for env in dev staging prod; do
 done
 ```
 
-Or: `make tg-validate` (same loop). `make validate` also runs `terraform fmt -check` and `terragrunt hcl fmt --check`.
+Or: `make tg-validate` (same loop). `make validate` also runs `terraform fmt -check`, `terragrunt hcl fmt --check`, and `make tflint`.
+
+### TFLint
+
+```bash
+make tflint
+```
+
+Config: `.tflint.hcl` (AzureRM ruleset). Requires the `tflint` binary.
 
 ---
 

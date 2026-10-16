@@ -23,6 +23,17 @@ stages:
           - bash: terragrunt hcl fmt --check
             displayName: Terragrunt HCL format check
           - bash: |
+              curl -fsSL "https://github.com/terraform-linters/tflint/releases/download/v$(tflintVersion)/tflint_linux_amd64.zip" -o tflint.zip
+              unzip -o tflint.zip
+              sudo mv tflint /usr/local/bin/tflint
+              tflint --version
+              tflint --init --config "$(Build.SourcesDirectory)/.tflint.hcl"
+              for dir in bootstrap modules/networking modules/compute modules/databases; do
+                echo "TFLint ${dir}..."
+                tflint --chdir="${dir}" --config "$(Build.SourcesDirectory)/.tflint.hcl"
+              done
+            displayName: TFLint (bootstrap + modules)
+          - bash: |
               terraform -chdir=bootstrap init -backend=false
               terraform -chdir=bootstrap validate
             displayName: Validate bootstrap
@@ -52,6 +63,9 @@ stages:
         steps:
           - checkout: self
           - bash: |
-              curl -sSL https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+              curl -fsSL "https://github.com/aquasecurity/tfsec/releases/download/$(tfsecVersion)/tfsec-linux-amd64" -o tfsec
+              chmod +x tfsec
+              sudo mv tfsec /usr/local/bin/tfsec
+              tfsec --version
               tfsec .
-            displayName: Run tfsec
+            displayName: Run tfsec (pinned)
